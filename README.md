@@ -19,7 +19,7 @@ https://CRAN.R-project.org/package=CASMI
 - Designed to validate CASMI’s capacity to recover known associations.
 - Outputs are interpreted to illustrate how CASMI quantifies multivariate relevance.
 
-**Script**: `01_synthetic_ground_truth.R`
+**Script**: [01_synthetic_ground_truth.R](./01_synthetic_ground_truth.R)
 
 ### 2. Simulated Clinical Nutrition Scenario
 
@@ -28,7 +28,7 @@ https://CRAN.R-project.org/package=CASMI
 - Illustrates how CASMI handles mixed data types and detects meaningful interactions.
 - Results are illustrative and should not be interpreted as clinical evidence.
 
-**Script**: `02_simulated_clinical_nutrition.R`
+**Script**: [02_simulated_clinical_nutrition.R](./02_simulated_clinical_nutrition.R)
 
 ## Requirements
 
