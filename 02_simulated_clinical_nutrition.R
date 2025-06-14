@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Simulated Clinical Nutrition Example for Evaluating CASMI.mineCombination()
+# Simulated Clinical Nutrition Example
 # ---------------------------------------------------------------------------
 # This script simulates a clinical nutrition scenario in which various nutrient 
 # intake levels and clinical indicators are used to predict a categorical outcome.
