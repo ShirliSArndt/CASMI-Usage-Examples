@@ -12,7 +12,9 @@
 # variable combinations in a mixed-type dataset under realistic, privacy-respecting 
 # conditions.
 #
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Version: CASMI 2.0.0 (CRAN)
+# -----------------------------------------------------------------------------
 
 # Load required libraries
 library(dplyr)
