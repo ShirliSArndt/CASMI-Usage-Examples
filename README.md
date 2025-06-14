@@ -1,10 +1,15 @@
 # CASMI Usage Examples
 
-This repository provides usage examples for the CASMI feature selection method, using synthetically generated datasets designed to support interpretability, transparency, and reproducibility.
+This repository provides usage examples for the `CASMI.mineCombination()` function, which identifies combinations of variables most strongly associated with a given outcome. The included examples use synthetic and simulated datasets designed to support interpretability, transparency, and reproducibility.
 
 ## Overview
 
-The examples focus on demonstrating how CASMI identifies informative variable combinations in different settings. Each example includes data generation, preprocessing, CASMI execution, and interpretation of results.
+`CASMI.mineCombination()` is part of the CASMI R package and is designed to discover combinations of predictors (factors, features, or independent variables) that show strong multivariate association with a categorical outcome. This is especially useful for exploratory analysis when associations may not be evident through individual variables alone.
+
+Each example includes data generation, preprocessing (including discretization of continuous variables), CASMI evaluation, and interpretation-ready code.
+
+The latest version of the CASMI package is available on CRAN — just search for `"CASMI"`  
+https://CRAN.R-project.org/package=CASMI
 
 ## Examples
 
