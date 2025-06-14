@@ -93,13 +93,15 @@ data <- data.frame(
 # CASMI Evaluation
 # -----------------------
 
-# Apply CASMI.mineCombination with default settings
-# Returns the single most informative combination of variables
+# Apply CASMI.mineCombination with default settings.
+# Returns a single combination of predictors that maximizes the CASMI score,
+# automatically selecting both the number and identity of variables.
 CASMI.mineCombination(data)
 
-# Restrict combinations to exactly two variables
-# Returns the top 3 combinations (default)
+# Apply CASMI.mineCombination with a fixed number of variables per combination.
+# Returns the top 3 combinations (default) that each include exactly 2 predictors.
 CASMI.mineCombination(data, NumOfVar = 2)
 
-# Limit to top 2 combinations of two variables
+# Apply CASMI.mineCombination with both number of variables and number of combinations defined.
+# Returns only the top 2 combinations that each include exactly 2 predictors.
 CASMI.mineCombination(data, NumOfVar = 2, NumOfComb = 2)
