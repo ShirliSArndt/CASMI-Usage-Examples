@@ -108,4 +108,5 @@ CASMI.mineCombination(data, NumOfVar = 2)
 
 # Apply CASMI.mineCombination with both number of variables and number of combinations defined.
 # Returns only the top 2 combinations that each include exactly 2 predictors.
-CASMI.mineCombination(data, NumOfVar = 2, NumOfComb = 2)
+CASMI.mineCombination(data, NumOfVar = 2,
+                            NumOfComb = 2)
