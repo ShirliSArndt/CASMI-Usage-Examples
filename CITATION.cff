@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this dataset and code, please cite it as below."
+title: "CASMI Usage Examples: Synthetic and Simulated Scenarios"
+version: "0.1.0"
+date-released: 2025-06-14
+
+authors:
+  - family-names: Shi
+    given-names: Jingyi
+    affiliation: "Mississippi State University"
+    email: jshi@math.msstate.edu
+  - family-names: Arndt
+    given-names: Shirli
+    affiliation: "Mississippi State University"
+    email: ss4469@msstate.edu
+  - family-names: Zhang
+    given-names: Jialin
+    affiliation: "Mississippi State University"
+    email: jzhang@math.msstate.edu
+
+repository-code: https://github.com/ShirliSArndt/CASMI-Usage-Examples
+
+references:
+  - type: software
+    authors:
+      - family-names: Shi
+        given-names: Jingyi (Catherine)
+      - family-names: Arndt
+        given-names: Shirli
+      - family-names: Zhang
+        given-names: Jialin
+    title: "CASMI: CASMI-Based Functions"
+    version: "2.0.0"
+    date-released: 2025-02-13
+    doi: 10.32614/CRAN.package.CASMI
+    url: https://CRAN.R-project.org/package=CASMI
