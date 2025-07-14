@@ -25,27 +25,29 @@ https://CRAN.R-project.org/package=CASMI
 
 ### 2. Real-World Simulation: Simple Mixed-Type Demo
 
-- Simulates a small clinical‐style dataset with:
-  - 2 continuous lab measures
-  - 1 discrete count variable
-  - 3 categorical risk factors
-  - A 10-level decile outcome (risk deciles Y1–Y10)
-- ~5% missingness injected at random per predictor
-- Continuous/count → 3-level clinical bins before CASMI
-- Illustrates CASMI’s handling of mixed data types in a compact example
+- Simulates a compact clinical-style cohort with:  
+  - **5 continuous measurements** (glucose, total cholesterol, HDL, sodium, creatinine) rounded to realistic precision  
+  - **1 discrete count** (white blood cell count)  
+  - **3 categorical factors** (sex, smoking status, ZIP code)  
+- Generates a **10-level decile outcome** (`Y1` = lowest 10% risk … `Y10` = highest 10% risk) **before** injecting missingness  
+- Injects **~5% missing values completely at random** into each predictor  
+- **Bins** continuous & count measures into Low/Normal/High categories using clinical cut-points  
+- Demonstrates running `CASMI.mineCombination()` on a fully **discretized, mixed-type** dataset  
 
 **Script**: [02_synthetic_realworld_simple.R](./02_synthetic_realworld_simple.R)
 
+---
+
 ### 3. Real-World Simulation: Complex Correlated CVD-Risk Cohort
 
-- Simulates a larger, correlated panel of:
-  - 10 continuous labs (via Gaussian copula + realistic bounds)
-  - 5 independent “noise” labs
-  - Demographics (age category, sex, ZIP code)
-  - A 3-level 10-year CVD risk outcome
-- ~5% missingness injected at random in core labs
-- Entropy-based binary binning, constant-level & coverage filtering
-- Demonstrates CASMI’s scalability to high-dimensional discrete data
+- Simulates a larger, clinically realistic cohort with:  
+  - **10 continuous labs** (sampled via Gaussian copula and truncated to physiologic bounds)  
+  - **5 independent “noise” labs** (TSH, amylase, ferritin, B12, WBC count)  
+  - **Demographics** (age category, sex, ZIP code)  
+- Creates a **3-level 10-year CVD risk outcome** (`LowRisk`, `MedRisk`, `HighRisk`) **before** introducing missingness  
+- Injects **~5% missing values completely at random** into core labs only  
+- Applies **entropy-based binary binning**, then drops constant-level and low-coverage predictors  
+- Demonstrates `CASMI.mineCombination()` on a **high-dimensional** discrete dataset  
 
 **Script**: [03_synthetic_realworld_complex.R](./03_synthetic_realworld_complex.R)
 
