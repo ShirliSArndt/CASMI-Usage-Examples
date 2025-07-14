@@ -20,105 +20,135 @@
 # Version: CASMI 2.0.0 (CRAN)
 # -----------------------------------------------------------------------------
 
-# Load required libraries
+# -----------------------
+# Load Required Libraries
+# -----------------------
 library(dplyr)
 library(CASMI)
 
 # -----------------------
-# Data Generation
+# Set Parameters
 # -----------------------
-set.seed(123)
-n <- 500
-
-# Continuous labs (clamped & rounded)
-glucose_cont    <- pmin(pmax(rnorm(n, 85, 20),  40), 400)  %>% round(0)  # mg/dL
-chol_cont       <- pmin(pmax(rnorm(n,180, 40),  75), 400)  %>% round(0)  # mg/dL
-hdl_cont        <- pmin(pmax(rnorm(n, 50, 15),  15), 100)  %>% round(0)  # mg/dL
-sodium_mmol     <- pmin(pmax(rnorm(n,140,  3), 125), 155)  %>% round(1)  # mmol/L
-creatinine_mgdl <- pmin(pmax(rnorm(n,  1, 0.2),0.5),   3)  %>% round(2)  # mg/dL
-
-# Discrete count
-wbc_count <- pmin(pmax(rpois(n, 7000), 500), 50000)  # cells/µL
-
-# Categorical factors
-sex      <- factor(sample(c("Female","Male"),      n, TRUE))
-smoker   <- factor(sample(c("No","Yes"),           n, TRUE, prob = c(0.7, 0.3)))
-zip_code <- factor(sample(c("10001","60610","94105"), n, TRUE))
+set.seed(123)        # Reproducibility for data generation
+n <- 500             # Number of samples
 
 # -----------------------
-# Outcome Generation
+# Generate Predictors
 # -----------------------
-# Compute a continuous risk score driven by the labs, then discretize into deciles
-y_num <-  0.02 * glucose_cont +
-  0.015 * chol_cont -
-  0.025 * hdl_cont +
-  0.10 * sodium_mmol +
-  0.50 * creatinine_mgdl +
-  rnorm(n, 0, 1)
 
-y_cat <- cut(
-  y_num,
-  breaks = quantile(y_num, probs = seq(0, 1, length.out = 11)),
-  labels = paste0("Y", 1:10),
-  include.lowest = TRUE
-)
-# Y1 = lowest 10% of risk scores, …, Y10 = highest 10%
+# Continuous lab predictors (clamped to realistic clinical ranges)
+glucose_cont    <- pmin(pmax(rnorm(n = n, mean = 90,  sd = 20),  50), 250)   %>% round(0)
+chol_cont       <- pmin(pmax(rnorm(n = n, mean = 190, sd = 35), 100), 300)   %>% round(0)
+hdl_cont        <- pmin(pmax(rnorm(n = n, mean = 55,  sd = 12),  20), 100)   %>% round(0)
+sodium_mmol     <- pmin(pmax(rnorm(n = n, mean = 140, sd = 3),  125), 155)   %>% round(1)
+creatinine_mgdl <- pmin(pmax(rnorm(n = n, mean = 1.0, sd = 0.25), 0.4), 2.5) %>% round(2)
 
-# -----------------------
-# Combine Data
-# -----------------------
-df <- data.frame(
-  glucose_cont, chol_cont, hdl_cont, sodium_mmol, creatinine_mgdl,
-  wbc_count,
-  sex, smoker, zip_code,
-  y_cat,
-  stringsAsFactors = FALSE
-)
+# Count-based lab (white blood cell count)
+wbc_count <- pmin(pmax(rpois(n = n, lambda = 7000), 2000), 25000)
+
+# Categorical demographic/location features
+sex      <- sample(c("Female", "Male"), size = n, replace = TRUE)
+smoker   <- sample(c("No", "Yes"),     size = n, replace = TRUE, prob = c(0.7, 0.3))
+zip_code <- sample(c("10001", "60610", "94105"), size = n, replace = TRUE)
 
 # -----------------------
-# Introduce Missing Values
+# Missing Values
 # -----------------------
-set.seed(456)
-for (col in c("glucose_cont","chol_cont","hdl_cont","sodium_mmol","creatinine_mgdl","wbc_count")) {
-  na_idx       <- sample(n, size = round(0.05 * n))
-  df[na_idx, col] <- NA
+set.seed(456)  # Reproducibility for NA placement
+
+# Apply ~5% missing values per numeric predictor
+for (var in c("glucose_cont", "chol_cont", "hdl_cont", "sodium_mmol", "creatinine_mgdl", "wbc_count")) {
+  missing_indices <- sample(1:n, size = round(0.05 * n), replace = FALSE)
+  assign(var, {
+    temp <- get(var)
+    temp[missing_indices] <- NA
+    temp
+  })
 }
 
 # -----------------------
-# Preprocessing
+# Generate Outcome Variable
 # -----------------------
+
+# Create a numeric risk score based on lab values
+y_numeric <- 0.02 * glucose_cont +
+            0.015 * chol_cont -
+            0.025 * hdl_cont +
+            0.10 * sodium_mmol +
+            0.50 * creatinine_mgdl +
+            rnorm(n = n, mean = 0, sd = 2)  # Add random noise
+
+# Discretize into deciles (Y1 = lowest 10%, Y10 = highest 10%)
+y_cat <- cut(y_numeric,
+             breaks = quantile(y_numeric, probs = seq(0, 1, length.out = 11), na.rm = TRUE),
+             labels = paste0("Y", 1:10),
+             include.lowest = TRUE)
+
+# -----------------------
+# Combine Raw Data
+# -----------------------
+
+# Combine all variables into a single data frame
+df <- data.frame(
+  glucose_cont, chol_cont, hdl_cont, sodium_mmol, creatinine_mgdl,
+  wbc_count, sex, smoker, zip_code, y_cat,
+  stringsAsFactors = FALSE
+)
+
+# View the head of raw data (optional)
+head(df)
+
+# -----------------------
+# Preprocessing: Auto-Bin Predictors
+# -----------------------
+# Use CASMI::autoBin.binary() to bin numeric/count variables based on relationship to y_cat.
+# The index = 1 parameter tells CASMI which column is the predictor to bin.
+
 df_processed <- df %>%
   mutate(
-    glucose_cat = cut(glucose_cont,
-                      breaks = c(-Inf, 70, 99, Inf),
-                      labels = c("Low","Normal","High")),
-    chol_cat    = cut(chol_cont,
-                      breaks = c(-Inf,100,199,Inf),
-                      labels = c("Low","Normal","High")),
-    hdl_cat     = cut(hdl_cont,
-                      breaks = c(-Inf, 40, 60, Inf),
-                      labels = c("Low","Normal","High")),
-    sodium_cat  = cut(sodium_mmol,
-                      breaks = c(-Inf,135,145,Inf),
-                      labels = c("Low","Normal","High")),
-    creat_cat   = cut(creatinine_mgdl,
-                      breaks = c(-Inf,0.8,1.2,Inf),
-                      labels = c("Low","Normal","High")),
-    wbc_cat     = cut(wbc_count,
-                      breaks = c(-Inf,4000,11000,Inf),
-                      labels = c("Low","Normal","High"))
+    glucose_cat = autoBin.binary(data.frame(glucose_cont, y_cat), index = 1)[, 1],
+    chol_cat    = autoBin.binary(data.frame(chol_cont,    y_cat), index = 1)[, 1],
+    hdl_cat     = autoBin.binary(data.frame(hdl_cont,     y_cat), index = 1)[, 1],
+    sodium_cat  = autoBin.binary(data.frame(sodium_mmol,  y_cat), index = 1)[, 1],
+    creat_cat   = autoBin.binary(data.frame(creatinine_mgdl, y_cat), index = 1)[, 1],
+    wbc_cat     = autoBin.binary(data.frame(wbc_count,    y_cat), index = 1)[, 1]
   ) %>%
   dplyr::select(
     glucose_cat, chol_cat, hdl_cat, sodium_cat, creat_cat, wbc_cat,
-    sex, smoker, zip_code,
-    y_cat
+    sex, smoker, zip_code, y_cat
   )
+
+# -----------------------
+# Filter for Valid Outcome
+# -----------------------
+# CASMI requires the outcome to be in the last column and contain NO missing values.
+
+df_processed <- df_processed %>% filter(!is.na(y_cat))
+
+# -----------------------
+# View Processed Data (optional)
+# -----------------------
+head(df_processed)
 
 # -----------------------
 # CASMI Evaluation
 # -----------------------
-# Auto‐select best combination of predictors
-print(CASMI.mineCombination(df_processed))
+
+# Apply CASMI.mineCombination with default settings.
+# Returns the single most informative combination of predictors,
+# automatically selecting both the number and identity of variables.
+CASMI.mineCombination(df_processed)
+
+# Apply CASMI.mineCombination with a fixed number of variables per combination.
+# Returns the top 3 combinations (default) that each include exactly 2 predictors.
+CASMI.mineCombination(df_processed, NumOfVar = 3)
+
+# Apply CASMI.mineCombination with both number of variables and number of combinations defined.
+# Returns only the top 2 combinations that each include exactly 2 predictors.
+CASMI.mineCombination(df_processed, NumOfVar = 3,
+                      NumOfComb = 2)
+
+
 
 # Top 3 two‐variable combinations
 print(CASMI.mineCombination(df_processed, NumOfVar = 2))
