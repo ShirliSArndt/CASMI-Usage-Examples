@@ -21,17 +21,35 @@ https://CRAN.R-project.org/package=CASMI
 
 **Script**: [01_synthetic_ground_truth.R](./01_synthetic_ground_truth.R)
 
-### 2. Simulated Clinical Nutrition Scenario
+### 2. Real-World Simulation: Simple Mixed-Type Demo
 
-- A synthetic dataset simulating real-world characteristics from nutritional epidemiology.
-- Includes continuous variables (e.g., nutrient levels) and categorical variables (e.g., discretized clinical indicators).
-- Illustrates how CASMI handles mixed data types and detects meaningful interactions.
-- Results are illustrative and should not be interpreted as clinical evidence.
+- Simulates a small clinical‐style dataset with:
+  - 2 continuous lab measures
+  - 1 discrete count variable
+  - 3 categorical risk factors
+  - A 10-level decile outcome (risk deciles Y1–Y10)
+- ~5% missingness injected at random per predictor
+- Continuous/count → 3-level clinical bins before CASMI
+- Illustrates CASMI’s handling of mixed data types in a compact example
 
-**Script**: [02_simulated_clinical_nutrition.R](./02_simulated_clinical_nutrition.R)
+**Script**: [02_synthetic_realworld_simple.R](./02_synthetic_realworld_simple.R)
+
+### 3. Real-World Simulation: Complex Correlated CVD-Risk Cohort
+
+- Simulates a larger, correlated panel of:
+  - 10 continuous labs (via Gaussian copula + realistic bounds)
+  - 5 independent “noise” labs
+  - Demographics (age category, sex, ZIP code)
+  - A 3-level 10-year CVD risk outcome
+- ~5% missingness injected at random in core labs
+- Entropy-based binary binning, constant-level & coverage filtering
+- Demonstrates CASMI’s scalability to high-dimensional discrete data
+
+**Script**: [03_synthetic_realworld_complex.R](./03_synthetic_realworld_complex.R)
 
 ## Requirements
 
 ```r
 install.packages("dplyr")
 install.packages("CASMI")
+
