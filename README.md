@@ -15,9 +15,11 @@ https://CRAN.R-project.org/package=CASMI
 
 ### 1. Synthetic Dataset with Known Structure
 
-- A fully controlled dataset where the outcome is explicitly dependent on a subset of categorical predictors.
-- Designed to validate CASMI’s capacity to recover known associations.
-- Outputs are interpreted to illustrate how CASMI quantifies multivariate relevance.
+- Simulates 10 categorical predictors (`x1`–`x10`), where only `x1`–`x5` truly drive the outcome and `x6`–`x10` are pure noise  
+- Generates a 10‐level categorical outcome (`y`) as a weighted sum of `x1`–`x5` plus random noise, then discretized into equal‐frequency bins  
+- Injects a small amount of missingness in predictors to mimic real‐world data imperfections  
+- Validates that `CASMI.mineCombination()` can recover the true informative subset (`x1`–`x5`) and ignore the noise variables  
+- Illustrates how to interpret kappa* and SMIz for known ground-truth associations  
 
 **Script**: [01_synthetic_ground_truth.R](./01_synthetic_ground_truth.R)
 
