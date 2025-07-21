@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Synthetic Ground Truth Example
+# Synthetic Ground Truth Example #1
 # ---------------------------------------------------------------------------
 # This script generates a synthetic dataset comprising 10 categorical predictor 
 # variables (x1 to x10) and a categorical outcome variable (y). The outcome is 
