@@ -21,7 +21,7 @@ https://CRAN.R-project.org/package=CASMI
 - Validates that `CASMI.mineCombination()` can recover the true informative subset (`x1`–`x5`) and ignore the noise variables  
 - Illustrates how to interpret kappa* and SMIz for known ground-truth associations  
 
-**Script**: [01_synthetic_ground_truth.R](./01_synthetic_ground_truth.R)
+**Script**: [`01_synthetic_ground_truth.R`](./01_synthetic_ground_truth.R)
 
 ### 2. Real-World Simulation: Simple Mixed-Type Demo
 
@@ -34,7 +34,7 @@ https://CRAN.R-project.org/package=CASMI
 - **Bins** continuous & count measures into Low/Normal/High categories using clinical cut-points  
 - Demonstrates running `CASMI.mineCombination()` on a fully **discretized, mixed-type** dataset  
 
-**Script**: [02_synthetic_realworld_simple.R](./02_synthetic_realworld_simple.R)
+**Script**: [`02_synthetic_realworld_simple.R`](./02_synthetic_realworld_simple.R)
 
 ---
 
