@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Synthetic Ground Truth Example #1: Enhanced Mixed‐Type Real‐World Simulation
+# Synthetic Ground Truth Example #2: Enhanced Mixed‐Type Real‐World Simulation
 # -----------------------------------------------------------------------------
 # This script generates a synthetic dataset comprising:
 #  • 5 continuous lab measures with realistic rounding:
@@ -12,7 +12,7 @@
 #  • 3 categorical factors: sex, smoking status, ZIP code
 #  • A 10‐level categorical outcome y_cat (deciles of a continuous risk score)
 #    – “Y1” = lowest 10% of risk, …, “Y10” = highest 10% of risk
-#  • ~5% missing values injected completely at random per predictor
+#  • ~5% missing values introduced completely at random per predictor
 #  • Continuous/count variables binned into Low/Normal/High before CASMI
 #  • Demonstrates CASMI.mineCombination() on mixed‐type, discretized data
 #
