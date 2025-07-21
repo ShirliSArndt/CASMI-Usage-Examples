@@ -38,18 +38,21 @@ https://CRAN.R-project.org/package=CASMI
 
 ---
 
-### 3. Real-World Simulation: Complex Correlated CVD-Risk Cohort
+### 3. Nutrient-Centric Simulation: CASMI Evaluation on Lab-Derived Risk
 
-- Simulates a larger, clinically realistic cohort with:  
-  - **10 continuous labs** (sampled via Gaussian copula and truncated to physiologic bounds)  
-  - **5 independent “noise” labs** (TSH, amylase, ferritin, B12, WBC count)  
-  - **Demographics** (age category, sex, ZIP code)  
-- Creates a **3-level 10-year CVD risk outcome** (`LowRisk`, `MedRisk`, `HighRisk`) **before** introducing missingness  
-- Injects **~5% missing values completely at random** into core labs only  
-- Applies **entropy-based binary binning**, then drops constant-level and low-coverage predictors  
-- Demonstrates `CASMI.mineCombination()` on a **high-dimensional** discrete dataset  
+- Simulates a synthetic clinical dataset with:
+  - **27 continuous lab variables** with realistic, physiologic distributions  
+    *(e.g., glucose, triglycerides, ferritin, CRP, liver enzymes)*
+  - **2 discrete lifestyle measures**  
+    *(supplement count, alcohol days/week)*
+  - **3 demographic factors**  
+    *(sex, age group, diet pattern)*
+- Creates a **5-level composite risk outcome** (`Risk1`–`Risk5`) based on lipid, vitamin, and inflammation markers *before* introducing missingness
+- Injects **~5% missing values completely at random** into each numeric predictor
+- Applies **supervised binning** using `autoBin.binary()`, converting continuous/count variables into categorical intervals
+- Demonstrates `CASMI.mineCombination()` on a **high-dimensional, discretized dataset**
 
-**Script**: [03_synthetic_realworld_complex.R](./03_synthetic_realworld_complex.R)
+**Script**: [`03_synthetic_realworld_complex.R`](03_synthetic_realworld_complex.R)
 
 ## Requirements
 
