@@ -86,7 +86,6 @@ data$x7[na_indices[31:35]] <- NA
 data$x8[na_indices[36:40]] <- NA
 data$x9[na_indices[41:45]] <- NA
 data$x10[na_indices[46:50]] <- NA
-
 # Uncomment the line below to also introduce missingness in y
 # data$y[na_indices[1:10]] <- NA
 
