@@ -57,7 +57,7 @@ x5_num <- as.numeric(factor(x5, levels = c("E", "F", "G", "H", "I")))
 
 # Construct a numeric response variable as a weighted sum of x1–x5 with added noise
 # The weights define the strength of association for each informative variable
-y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 0.5 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
+y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 2 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
 
 # Discretize numeric y into 10 approximately equal-frequency categorical bins
 y <- cut(y_numeric, breaks = 10, labels = paste0("Category", 1:10))
