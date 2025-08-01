@@ -27,7 +27,6 @@ https://CRAN.R-project.org/package=CASMI
 
 - Simulates a compact clinical-style cohort with:  
   - **5 continuous measurements** (glucose, total cholesterol, HDL, sodium, creatinine) rounded to realistic precision  
-  - **1 discrete count** (white blood cell count)  
   - **3 categorical factors** (sex, smoking status, ZIP code)  
 - Generates a **10-level decile outcome** (`Y1` = lowest 10% risk … `Y10` = highest 10% risk) **before** injecting missingness  
 - Injects **~5% missing values completely at random** into each predictor  
