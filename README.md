@@ -17,7 +17,7 @@ https://CRAN.R-project.org/package=CASMI
 
 - Simulates 10 categorical predictors (`x1`–`x10`), where only `x1`–`x5` truly drive the outcome and `x6`–`x10` are pure noise  
 - Generates a 10‐level categorical outcome (`y`) as a weighted sum of `x1`–`x5` plus random noise, then discretized into equal‐frequency bins  
-- Injects a small amount of missingness in predictors to mimic real‐world data imperfections  
+- Introduces a small amount of missingness in predictors to mimic real‐world data imperfections  
 - Validates that `CASMI.mineCombination()` can recover the true informative subset (`x1`–`x5`) and ignore the noise variables  
 - Illustrates how to interpret kappa* and SMIz for known ground-truth associations  
 
@@ -28,8 +28,8 @@ https://CRAN.R-project.org/package=CASMI
 - Simulates a compact clinical-style cohort with:  
   - **5 continuous measurements** (glucose, total cholesterol, HDL, sodium, creatinine) rounded to realistic precision  
   - **3 categorical factors** (sex, smoking status, ZIP code)  
-- Generates a **10-level decile outcome** (`Y1` = lowest 10% risk … `Y10` = highest 10% risk) **before** injecting missingness  
-- Injects **~5% missing values completely at random** into each predictor  
+- Generates a **10-level decile outcome** (`Y1` = lowest 10% risk … `Y10` = highest 10% risk) **before** introducing missingness  
+- Introduces **~5% missing values completely at random** into each predictor  
 - **Bins** continuous & count measures into Low/Normal/High categories using clinical cut-points  
 - Demonstrates running `CASMI.mineCombination()` on a fully **discretized, mixed-type** dataset  
 
@@ -47,7 +47,7 @@ https://CRAN.R-project.org/package=CASMI
   - **3 demographic factors**  
     *(sex, age group, diet pattern)*
 - Creates a **5-level composite risk outcome** (`Risk1`–`Risk5`) based on lipid, vitamin, and inflammation markers *before* introducing missingness
-- Injects **~5% missing values completely at random** into each numeric predictor
+- Introduces **~5% missing values completely at random** into each numeric predictor
 - Applies **supervised binning** using `autoBin.binary()`, converting continuous/count variables into categorical intervals
 - Demonstrates `CASMI.mineCombination()` on a **high-dimensional, discretized dataset**
 
