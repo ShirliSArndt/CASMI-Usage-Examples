@@ -37,6 +37,14 @@ x3 <- sample(c("L", "M", "N"), size = n, replace = TRUE, prob = c(0.5, 0.3, 0.2)
 x4 <- sample(c("P", "Q"), size = n, replace = TRUE, prob = c(0.7, 0.3))
 x5 <- sample(c("E", "F", "G", "H", "I"), size = n, replace = TRUE, prob = c(0.2, 0.3, 0.2, 0.2, 0.1))
 
+# Generate uninformative predictors x6–x10 (noise) with random distributions
+# x6 <- sample(c("A", "B", "C", "D"), size = n, replace = TRUE)
+# x7 <- sample(c("W", "X", "Y", "Z"), size = n, replace = TRUE)
+# x8 <- sample(c("L", "M", "N"), size = n, replace = TRUE)
+# x9 <- sample(c("P", "Q"), size = n, replace = TRUE)
+# x10 <- sample(c("E", "F", "G", "H", "I"), size = n, replace = TRUE)
+
+## New (email sent on July 13th, 2025)
 # Generate uninformative predictors x6 to x10 with different (but unrelated) distributions
 x6 <- sample(c("A", "B", "C", "D"), size = n, replace =  TRUE, prob = c(0.05, 0.25, 0.25, 0.45))
 x7 <- sample(c("W", "X", "Y", "Z"), size = n, replace = TRUE, prob = c(0.1, 0.1, 0.3, 0.5))
@@ -57,6 +65,9 @@ x5_num <- as.numeric(factor(x5, levels = c("E", "F", "G", "H", "I")))
 
 # Construct a numeric response variable as a weighted sum of x1–x5 with added noise
 # The weights define the strength of association for each informative variable
+# y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 0.5 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
+
+# New (email sent on July 30th)
 y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 2 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
 
 # Discretize numeric y into 10 approximately equal-frequency categorical bins
@@ -86,6 +97,7 @@ data$x7[na_indices[31:35]] <- NA
 data$x8[na_indices[36:40]] <- NA
 data$x9[na_indices[41:45]] <- NA
 data$x10[na_indices[46:50]] <- NA
+
 # Uncomment the line below to also introduce missingness in y
 # data$y[na_indices[1:10]] <- NA
 
@@ -109,3 +121,18 @@ CASMI.mineCombination(data, NumOfVar = 2)
 # Returns only the top 2 combinations that each include exactly 2 predictors.
 CASMI.mineCombination(data, NumOfVar = 2,
                             NumOfComb = 2)
+
+# ----------------------------------------------------
+# Descriptive Summary for All Variables (Example 1)
+# ----------------------------------------------------
+# Used for exploratory dataset overview.
+# Not all results are shown in the final paper; key counts may be extracted.
+
+# Identify categorical variables (all variables are categorical in this example)
+cat_vars <- data %>% dplyr::select(where(~is.character(.) || is.factor(.)))
+
+# Frequency tables for each categorical variable (including the outcome)
+lapply(cat_vars, table, useNA = "ifany")
+
+# Optional: Missing value count per variable
+sapply(cat_vars, function(col) sum(is.na(col)))
