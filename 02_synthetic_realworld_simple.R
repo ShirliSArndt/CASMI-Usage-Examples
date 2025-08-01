@@ -8,7 +8,6 @@
 #      – hdl_cont           (mg/dL, integer)
 #      – sodium_mmol        (mmol/L, 1 decimal)
 #      – creatinine_mgdl    (mg/dL, 2 decimals)
-#  • 1 discrete count: white blood cell count (cells/µL, integer)
 #  • 3 categorical factors: sex, smoking status, ZIP code
 #  • A 10‐level categorical outcome y_cat (deciles of a continuous risk score)
 #    – “Y1” = lowest 10% of risk, …, “Y10” = highest 10% of risk
@@ -30,7 +29,7 @@ library(CASMI)
 # Set Parameters
 # -----------------------
 set.seed(123)        # Reproducibility for data generation
-n <- 500             # Number of samples
+n <- 1000             # Number of samples
 
 # -----------------------
 # Generate Predictors
@@ -44,7 +43,7 @@ sodium_mmol     <- pmin(pmax(rnorm(n = n, mean = 140, sd = 3),  125), 155)   %>%
 creatinine_mgdl <- pmin(pmax(rnorm(n = n, mean = 1.0, sd = 0.25), 0.4), 2.5) %>% round(2)
 
 # Count-based lab (white blood cell count)
-wbc_count <- pmin(pmax(rpois(n = n, lambda = 7000), 2000), 25000)
+# wbc_count <- pmin(pmax(rpois(n = n, lambda = 7000), 2000), 25000)
 
 # Categorical demographic/location features
 sex      <- sample(c("Female", "Male"), size = n, replace = TRUE)
@@ -57,7 +56,7 @@ zip_code <- sample(c("10001", "60610", "94105"), size = n, replace = TRUE)
 set.seed(456)  # Reproducibility for NA placement
 
 # Apply ~5% missing values per numeric predictor
-for (var in c("glucose_cont", "chol_cont", "hdl_cont", "sodium_mmol", "creatinine_mgdl", "wbc_count")) {
+for (var in c("glucose_cont", "chol_cont", "hdl_cont", "sodium_mmol", "creatinine_mgdl")) {
   missing_indices <- sample(1:n, size = round(0.05 * n), replace = FALSE)
   assign(var, {
     temp <- get(var)
@@ -71,11 +70,11 @@ for (var in c("glucose_cont", "chol_cont", "hdl_cont", "sodium_mmol", "creatinin
 # -----------------------
 
 # Create a numeric risk score based on lab values
-y_numeric <- 0.02 * glucose_cont +
-            0.015 * chol_cont -
+y_numeric <- 0.20 * glucose_cont +
+            0.15 * chol_cont -
             0.025 * hdl_cont +
-            0.10 * sodium_mmol +
-            0.50 * creatinine_mgdl +
+            0.50 * sodium_mmol +
+            1.50 * creatinine_mgdl +
             rnorm(n = n, mean = 0, sd = 2)  # Add random noise
 
 # Discretize into deciles (Y1 = lowest 10%, Y10 = highest 10%)
@@ -90,19 +89,21 @@ y_cat <- cut(y_numeric,
 
 # Combine all variables into a single data frame
 df <- data.frame(
-  glucose_cont, chol_cont, hdl_cont, sodium_mmol, creatinine_mgdl,
-  wbc_count, sex, smoker, zip_code, y_cat,
+  glucose_cont, chol_cont, hdl_cont, sodium_mmol, creatinine_mgdl, sex, smoker, zip_code, y_cat,
   stringsAsFactors = FALSE
 )
 
 # View the head of raw data (optional)
-head(df)
+head(df, 10)
+
+## Double-check NA in the last column
 
 # -----------------------
 # Preprocessing: Auto-Bin Predictors
 # -----------------------
 # Use CASMI::autoBin.binary() to bin numeric/count variables based on relationship to y_cat.
 # The index = 1 parameter tells CASMI which column is the predictor to bin.
+# Only bin predictors that contribute to y_cat.
 
 df_processed <- df %>%
   mutate(
@@ -110,14 +111,11 @@ df_processed <- df %>%
     chol_cat    = autoBin.binary(data.frame(chol_cont,    y_cat), index = 1)[, 1],
     hdl_cat     = autoBin.binary(data.frame(hdl_cont,     y_cat), index = 1)[, 1],
     sodium_cat  = autoBin.binary(data.frame(sodium_mmol,  y_cat), index = 1)[, 1],
-    creat_cat   = autoBin.binary(data.frame(creatinine_mgdl, y_cat), index = 1)[, 1],
-    wbc_cat     = autoBin.binary(data.frame(wbc_count,    y_cat), index = 1)[, 1]
+    creat_cat   = autoBin.binary(data.frame(creatinine_mgdl, y_cat), index = 1)[, 1]
   ) %>%
   dplyr::select(
-    glucose_cat, chol_cat, hdl_cat, sodium_cat, creat_cat, wbc_cat,
-    sex, smoker, zip_code, y_cat
+    glucose_cat, chol_cat, hdl_cat, sodium_cat, creat_cat, y_cat
   )
-
 # -----------------------
 # Filter for Valid Outcome
 # -----------------------
@@ -128,7 +126,7 @@ df_processed <- df_processed %>% filter(!is.na(y_cat))
 # -----------------------
 # View Processed Data (optional)
 # -----------------------
-head(df_processed)
+head(df_processed, 10)
 
 # -----------------------
 # CASMI Evaluation
@@ -148,10 +146,18 @@ CASMI.mineCombination(df_processed, NumOfVar = 3)
 CASMI.mineCombination(df_processed, NumOfVar = 3,
                       NumOfComb = 2)
 
+# ----------------------------------------------------
+# Descriptive Summary for All Variables (Example #2)
+# ----------------------------------------------------
+# Used for exploratory dataset overview
+# Not all results are shown in the final paper; key stats may be extracted
 
+# Separate continuous and categorical variables
+cont_vars <- df %>% dplyr::select(where(is.numeric))
+cat_vars  <- df %>% dplyr::select(where(~is.character(.) || is.factor(.)))
 
-# Top 3 two‐variable combinations
-print(CASMI.mineCombination(df_processed, NumOfVar = 2))
+# Summary stats for continuous
+summary(cont_vars)
 
-# Top 2 of those two‐variable combinations
-print(CASMI.mineCombination(df_processed, NumOfVar = 2, NumOfComb = 2))
+# Frequency tables for categorical
+lapply(cat_vars, table, useNA = "ifany")
