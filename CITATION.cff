@@ -5,18 +5,10 @@ version: "0.1.0"
 date-released: 2025-06-14
 
 authors:
-  - family-names: Shi
-    given-names: Jingyi
-    affiliation: "Mississippi State University"
-    email: jshi@math.msstate.edu
   - family-names: Arndt
     given-names: Shirli
     affiliation: "Mississippi State University"
     email: ss4469@msstate.edu
-  - family-names: Zhang
-    given-names: Jialin
-    affiliation: "Mississippi State University"
-    email: jzhang@math.msstate.edu
 
 repository-code: https://github.com/ShirliSArndt/CASMI-Usage-Examples
 
