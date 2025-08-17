@@ -15,12 +15,15 @@ https://CRAN.R-project.org/package=CASMI
 
 ### 1. Synthetic Dataset with Known Structure
 
-- Simulates 10 categorical predictors (`x1`–`x10`), where only `x1`–`x5` truly drive the outcome and `x6`–`x10` are pure noise  
-- Generates a 10‐level categorical outcome (`y`) as a weighted sum of `x1`–`x5` plus random noise, then discretized into equal‐frequency bins  
-- Introduces a small amount of missingness in predictors to mimic real‐world data imperfections  
-- Validates that `CASMI.mineCombination()` can recover the true informative subset (`x1`–`x5`) and ignore the noise variables  
-- Illustrates how to interpret kappa* and SMIz for known ground-truth associations  
-
+- Simulates **10 categorical predictors** (`x1`–`x10`):  
+  - *Informative (used in outcome)* → `x1`, `x2`, `x3`, `x4`, `x5`  
+  - *Non-informative (noise)* → `x6`, `x7`, `x8`, `x9`, `x10`  
+- Constructs a continuous outcome as a **weighted sum of `x1`–`x5`** plus random noise.  
+- Defines a **10-level categorical outcome (`y`)** by discretizing the continuous score into equal-frequency bins.  
+- Introduces **missing values** in predictors (~5%) to mimic real-world data imperfections.  
+- Demonstrates that `CASMI.mineCombination()` can recover the **true informative subset** (`x1`–`x5`) and ignore noise predictors.  
+- Provides a **ground-truth benchmark** to illustrate interpretation of `kappa*` and `SMIz`.  
+  
 **Script**: [`01_synthetic_ground_truth.R`](./01_synthetic_ground_truth.R)
 
 ### 2. Real-World Simulation: Simple Mixed-Type Demo
