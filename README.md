@@ -25,13 +25,19 @@ https://CRAN.R-project.org/package=CASMI
 
 ### 2. Real-World Simulation: Simple Mixed-Type Demo
 
-- Simulates a compact clinical-style cohort with:  
-  - **5 continuous measurements** (glucose, total cholesterol, HDL, sodium, creatinine) rounded to realistic precision  
-  - **3 categorical factors** (sex, smoking status, region code)  
-- Generates a **10-level decile outcome** (`Y1` = lowest 10% risk … `Y10` = highest 10% risk) **before** introducing missingness  
-- Introduces **~5% missing values completely at random** into each predictor  
-- **Bins** continuous & count measures into Low/Normal/High categories using clinical cut-points  
-- Demonstrates running `CASMI.mineCombination()` on a fully **discretized, mixed-type** dataset  
+- Simulates a compact clinical cohort with:  
+  - **7 continuous labs**:  
+    - *Informative (used in outcome)* → glucose, cholesterol, HDL, sodium, creatinine  
+    - *Non-informative (noise)* → triglycerides, potassium  
+  - **3 categorical factors**:  
+    - *Informative (used in outcome)* → smoking status  
+    - *Non-informative (noise)* → sex, region code  
+- Constructs a continuous risk score from glucose, cholesterol, HDL, sodium, creatinine, **and smoker** (Yes=1, No=0) with added random noise.  
+- Defines **`y_cat` as 10 deciles** of the risk score; missingness in predictors is injected **before** outcome generation so NAs can propagate.  
+- Injects **~5% MCAR missing values per variable** (continuous and categorical).  
+- **Preprocessing for CASMI:** supervised auto-binning (`autoBin.binary`) applied only to the **informative continuous labs**;  
+  `smoker` kept categorical; for a controlled teaching example, `df_processed` includes only the outcome-driver predictors.  
+- Demonstrates `CASMI.mineCombination()` on a **discretized, mixed-type** dataset with known ground truth structure.  
 
 **Script**: [`02_synthetic_realworld_simple.R`](./02_synthetic_realworld_simple.R)
 
