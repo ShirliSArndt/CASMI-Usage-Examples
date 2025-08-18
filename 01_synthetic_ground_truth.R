@@ -11,9 +11,6 @@
 # is discretized into 10 levels. This dataset is designed specifically to 
 # evaluate the behavior of the CASMI.mineCombination() function under a 
 # known ground-truth structure.
-
-# -----------------------------------------------------------------------------
-# Version: CASMI 2.0.0 (CRAN)
 # -----------------------------------------------------------------------------
 
 # Load required libraries
@@ -37,14 +34,6 @@ x3 <- sample(c("L", "M", "N"), size = n, replace = TRUE, prob = c(0.5, 0.3, 0.2)
 x4 <- sample(c("P", "Q"), size = n, replace = TRUE, prob = c(0.7, 0.3))
 x5 <- sample(c("E", "F", "G", "H", "I"), size = n, replace = TRUE, prob = c(0.2, 0.3, 0.2, 0.2, 0.1))
 
-# Generate uninformative predictors x6–x10 (noise) with random distributions
-# x6 <- sample(c("A", "B", "C", "D"), size = n, replace = TRUE)
-# x7 <- sample(c("W", "X", "Y", "Z"), size = n, replace = TRUE)
-# x8 <- sample(c("L", "M", "N"), size = n, replace = TRUE)
-# x9 <- sample(c("P", "Q"), size = n, replace = TRUE)
-# x10 <- sample(c("E", "F", "G", "H", "I"), size = n, replace = TRUE)
-
-## New (email sent on July 13th, 2025)
 # Generate uninformative predictors x6 to x10 with different (but unrelated) distributions
 x6 <- sample(c("A", "B", "C", "D"), size = n, replace =  TRUE, prob = c(0.05, 0.25, 0.25, 0.45))
 x7 <- sample(c("W", "X", "Y", "Z"), size = n, replace = TRUE, prob = c(0.1, 0.1, 0.3, 0.5))
@@ -65,9 +54,7 @@ x5_num <- as.numeric(factor(x5, levels = c("E", "F", "G", "H", "I")))
 
 # Construct a numeric response variable as a weighted sum of x1–x5 with added noise
 # The weights define the strength of association for each informative variable
-# y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 0.5 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
 
-# New (email sent on July 30th)
 y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 2 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
 
 # Discretize numeric y into 10 approximately equal-frequency categorical bins
@@ -84,22 +71,21 @@ data <- data.frame(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, y)
 # Optional: Introduce Missing Values
 # -----------------------
 
-# Randomly assign NA values across different rows for each variable to simulate missingness
+# Randomly assign ~5% NA values across different rows for each variable to simulate missingness
 # This step mimics real-world data quality issues for testing robustness
-na_indices <- sample(1:n, size = 50, replace = FALSE)
-data$x1[na_indices[1:5]] <- NA
-data$x2[na_indices[6:10]] <- NA
-data$x3[na_indices[11:15]] <- NA
-data$x4[na_indices[16:20]] <- NA
-data$x5[na_indices[21:25]] <- NA
-data$x6[na_indices[26:30]] <- NA
-data$x7[na_indices[31:35]] <- NA
-data$x8[na_indices[36:40]] <- NA
-data$x9[na_indices[41:45]] <- NA
-data$x10[na_indices[46:50]] <- NA
+data$x1[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x2[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x3[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x4[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x5[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x6[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x7[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x8[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x9[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
+data$x10[sample(1:n, size = round(0.05 * n), replace = FALSE)] <- NA
 
-# Uncomment the line below to also introduce missingness in y
-# data$y[na_indices[1:10]] <- NA
+# Uncomment the line below to also introduce ~5% missingness in y
+# data$y[sample(1:n, size = round(0.05 * n), replace = FALSE)] <- NA
 
 # Display the first few rows for inspection
 head(data)
@@ -121,18 +107,3 @@ CASMI.mineCombination(data, NumOfVar = 2)
 # Returns only the top 2 combinations that each include exactly 2 predictors.
 CASMI.mineCombination(data, NumOfVar = 2,
                             NumOfComb = 2)
-
-# ----------------------------------------------------
-# Descriptive Summary for All Variables (Example 1)
-# ----------------------------------------------------
-# Used for exploratory dataset overview.
-# Not all results are shown in the final paper; key counts may be extracted.
-
-# Identify categorical variables (all variables are categorical in this example)
-cat_vars <- data %>% dplyr::select(where(~is.character(.) || is.factor(.)))
-
-# Frequency tables for each categorical variable (including the outcome)
-lapply(cat_vars, table, useNA = "ifany")
-
-# Optional: Missing value count per variable
-sapply(cat_vars, function(col) sum(is.na(col)))
