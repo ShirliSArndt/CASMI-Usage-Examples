@@ -54,7 +54,6 @@ x5_num <- as.numeric(factor(x5, levels = c("E", "F", "G", "H", "I")))
 
 # Construct a numeric response variable as a weighted sum of x1–x5 with added noise
 # The weights define the strength of association for each informative variable
-
 y_numeric <- 3 * x1_num + 2 * x2_num + x3_num + 2 * x4_num - 2 * x5_num + rnorm(n, mean = 0, sd = 2)
 
 # Discretize numeric y into 10 approximately equal-frequency categorical bins
@@ -68,24 +67,28 @@ y <- cut(y_numeric, breaks = 10, labels = paste0("Category", 1:10))
 data <- data.frame(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, y)
 
 # -----------------------
-# Optional: Introduce Missing Values
+# Optional: Missing Values
 # -----------------------
 
-# Randomly assign ~5% NA values across different rows for each variable to simulate missingness
-# This step mimics real-world data quality issues for testing robustness
-data$x1[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x2[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x3[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x4[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x5[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x6[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x7[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x8[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x9[sample(1:n, size = round(0.05 * n), replace = FALSE)]  <- NA
-data$x10[sample(1:n, size = round(0.05 * n), replace = FALSE)] <- NA
+# Randomly assign a different number of NAs to each variable.
+# Each variable gets between 1 and 100 missing values, so the amount varies
+# across features and never exceeds about 10% of the data when n = 1000.
 
-# Uncomment the line below to also introduce ~5% missingness in y
-# data$y[sample(1:n, size = round(0.05 * n), replace = FALSE)] <- NA
+set.seed(123)
+
+data$x1 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x2 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x3 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x4 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x5 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x6 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x7 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x8 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x9 [sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+data$x10[sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
+
+# Uncomment if you also want missingness in y
+# data$y[sample(1:n, size = sample(1:100, 1), replace = FALSE)] <- NA
 
 # Display the first few rows for inspection
 head(data)
