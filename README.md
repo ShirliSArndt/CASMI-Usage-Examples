@@ -13,17 +13,19 @@ https://CRAN.R-project.org/package=CASMI
 
 ## Examples
 
-### 1. Synthetic Dataset with Known Structure
+### 1. Synthetic Dataset: Known Informative Predictors
 
-- Simulates **10 categorical predictors** (`x1`–`x10`):  
-  - *Informative (used in outcome)* → `x1`, `x2`, `x3`, `x4`, `x5`  
-  - *Non-informative (noise)* → `x6`, `x7`, `x8`, `x9`, `x10`  
-- Constructs a continuous outcome as a **weighted sum of `x1`–`x5`** plus random noise.  
-- Defines a **10-level categorical outcome (`y`)** by discretizing the continuous score into equal-frequency bins.  
-- Introduces **missing values** in predictors (~5%) to mimic real-world data imperfections.  
-- Demonstrates that `CASMI.mineCombination()` can recover the **true informative subset** (`x1`–`x5`) and ignore noise predictors.  
-- Provides a **ground-truth benchmark** to illustrate interpretation of `kappa*` and `SMIz`.  
-  
+- Simulates **10 categorical predictors**:  
+  - **Informative (used in outcome)** → x1, x2, x3, x4, x5  
+  - **Non-informative (noise)** → x6, x7, x8, x9, x10  
+- Constructs a numeric score as a **weighted sum of x1–x5** with added Gaussian noise.  
+- Defines outcome `y` as **10 deciles** of this score (Category1–Category10).  
+- Injects **random missing values per predictor**: each column receives an independently sampled number of NAs (1–100), outcome `y` remains fully observed.  
+- **CASMI analysis:**  
+  - *Default run:* `CASMI.mineCombination(data)` suggests the most informative combination with estimates of κ\* (95% CI), SMIz (95% CI), and p-value.  
+  - *Fixed size (NumOfVar = 2):* returns the top-ranked pairs under the same metrics.  
+- Provides a **ground-truth example** for demonstrating CASMI on a fully categorical dataset with heterogeneous missingness and structured noise.  
+
 **Script**: [`01_synthetic_ground_truth.R`](./01_synthetic_ground_truth.R)
 
 ### 2. Real-World Simulation: Simple Mixed-Type Demo
